@@ -66,7 +66,7 @@ void DispatcherMiddleman::handle_signal(){
       prof->add_data_to_record(cached_data1);
       break;
     case PROCESS:
-      proc->add_data_to_record(cached_data1, cached_data2);      
+      proc->add_data_to_record(cached_data1, cached_data2);
       break;
     case LOGS:
       logs->add_data_to_record(cached_data1);

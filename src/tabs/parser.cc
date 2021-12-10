@@ -28,7 +28,9 @@ std::string Parser::handle_path(std::istringstream *is) {
 	if (it != end(exclude_flags)) {
 		return "";
 	}
-	return "path: " + path + "\tmode: " + flags + '\n';
+	//return "path: " + path + "\tmode: " + flags + '\n';
+
+	return path + ',' + flags + ':';
 }
 
 std::string Parser::get_perms(const std::string& filename) {
@@ -38,13 +40,19 @@ std::string Parser::get_perms(const std::string& filename) {
 		return "ERROR";
   	}
 
+	// keep track of how many of each resource we encounter in each of the 4 rule qualifier categories
+	int allow_len = 0;
+	int deny_len = 0;
+	int audit_len = 0;
+	int owner_len = 0;
+
 	// strings for holding tempory file input tokens
 	std::string line;
 	std::string token;
 	std::string path;
 	std::string flags;
 
-	// strings containing the rules/permissions we need to eventually return to be parsed my caller
+	// strings containing the rules/permissions we need to eventually return to be parsed by caller
 	std::string allow_str;
 	std::string deny_str;
 	std::string audit_str;
@@ -72,6 +80,7 @@ std::string Parser::get_perms(const std::string& filename) {
 			// append to the string holding all rules with the allow qualifier
 			std::istringstream is(line); // so we can use getline as a tokenizer
 			allow_str += Parser::handle_path(&is);
+			allow_len++;
 			// left in a seperate if statement for any additions that may need to be made later
 			// that would differentiate these from domain sockets that start with @	
 		} else if (line.at(0) == '@') {
@@ -79,6 +88,7 @@ std::string Parser::get_perms(const std::string& filename) {
 			// append to the string holding all rules with the allow qualifier
 			std::istringstream is(line); // so we can use getline as a tokenizer
 			allow_str += Parser::handle_path(&is);
+			allow_len++;
 			// left in a seperate if statement for any additions that may need to be made later
 			// that would differentiate these from regular paths that start with /
 		} else {
@@ -88,22 +98,22 @@ std::string Parser::get_perms(const std::string& filename) {
 			std::getline(is, token, ' ');
 			if (token == "deny") {
 				deny_str += Parser::handle_path(&is);
+				deny_len++;
 			} else if (token == "audit") {
 				audit_str += Parser::handle_path(&is);
+				audit_len++;
 			} else if (token == "owner") {
 				owner_str += Parser::handle_path(&is);
+				owner_len++;
 			} else if (token == "allow") {
 				// assigned by default but should still check just in case someone explicitly declared it
 				allow_str += Parser::handle_path(&is);
+				allow_len++;
 			}
 		}
 	}
 
-	// temporary way of grouping for test output, return type can be changed to account for these categories
-	std::cout << "\n\t\t\t\t\t --- Allow --- \n" + allow_str;
-	std::cout << "\n\t\t\t\t\t --- Deny  --- \n" + deny_str;
-	std::cout << "\n\t\t\t\t\t --- Audit --- \n" + audit_str;
-	std::cout << "\n\t\t\t\t\t --- Owner --- \n" + owner_str;
-
-	return allow_str + deny_str + audit_str + owner_str;
+	// return one massive semicolon-seperated string where the first 4 tokens are the number of entries in each rule qualifier category
+	return "" + std::to_string(allow_len) + ';' + std::to_string(deny_len) + ';' + std::to_string(audit_len) + ';' + std::to_string(owner_len) + ';'
+		+ allow_str + ';' + deny_str + ';' + audit_str + ';' + owner_str;
 }

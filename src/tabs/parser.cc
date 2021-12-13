@@ -30,7 +30,7 @@ std::string Parser::handle_path(std::istringstream *is) {
 	}
 	//return "path: " + path + "\tmode: " + flags + '\n';
 
-	return path + ',' + flags + ':';
+	return path + ' ' + flags + ':';
 }
 
 std::string Parser::get_perms(const std::string& filename) {

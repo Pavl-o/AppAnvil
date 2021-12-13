@@ -36,7 +36,7 @@ void Permissions::add_data_to_record(const std::string& data) {
     for (int i = 0; i < stoi(allow_len_str); i++) {
         std::string path;
 	    std::string flags;
-	    std::getline(allow_is, path, ',');
+	    std::getline(allow_is, path, ' ');
 	    std::getline(allow_is, flags, ':');
 
         auto row = col_record->new_row();
@@ -50,7 +50,7 @@ void Permissions::add_data_to_record(const std::string& data) {
     for (int i = 0; i < stoi(deny_len_str); i++) {
         std::string path;
 	    std::string flags;
-	    std::getline(deny_is, path, ',');
+	    std::getline(deny_is, path, ' ');
 	    std::getline(deny_is, flags, ':');
 
         auto row = col_record->new_row();
@@ -64,7 +64,7 @@ void Permissions::add_data_to_record(const std::string& data) {
     for (int i = 0; i < stoi(audit_len_str); i++) {
         std::string path;
 	    std::string flags;
-	    std::getline(audit_is, path, ',');
+	    std::getline(audit_is, path, ' ');
 	    std::getline(audit_is, flags, ':');
 
         auto row = col_record->new_row();
@@ -78,7 +78,7 @@ void Permissions::add_data_to_record(const std::string& data) {
     for (int i = 0; i < stoi(owner_len_str); i++) {
         std::string path;
 	    std::string flags;
-	    std::getline(owner_is, path, ',');
+	    std::getline(owner_is, path, ' ');
 	    std::getline(owner_is, flags, ':');
 
         auto row = col_record->new_row();

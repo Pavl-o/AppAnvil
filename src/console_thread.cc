@@ -62,8 +62,11 @@ void ConsoleThread::run_command(TabState state){
 
     case PERMISSIONS:
     {
-      std::string status = CommandCaller::get_status_str();
-      dispatch_man.update_profiles(status);
+      printf("got to PERMISSIONS case in console_thread\n"); 
+      std::string parsed_data = CommandCaller::get_perms_str();
+      printf("about to call update_permissions() in PERMISSIONS case in console_thread\n");
+      dispatch_man.update_permissions(parsed_data);
+      printf("done with update_permissions() in PERMISSIONS case in console_thread\n");
     }
     break;
 
@@ -89,6 +92,7 @@ void ConsoleThread::console_caller(){
     switch (message.event)
     {
       case REFRESH:
+        printf("got the refresh message in console_thread\n");
         run_command(message.state);
       break;
 

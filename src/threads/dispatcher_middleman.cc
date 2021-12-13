@@ -1,12 +1,14 @@
 #include "dispatcher_middleman.h"
 
-DispatcherMiddleman::DispatcherMiddleman(std::shared_ptr<Profiles> prof_arg, std::shared_ptr<Processes> proc_arg, std::shared_ptr<Logs> logs_arg)
+DispatcherMiddleman::DispatcherMiddleman(std::shared_ptr<Profiles> prof_arg, std::shared_ptr<Processes> proc_arg, 
+                                        std::shared_ptr<Logs> logs_arg, std::shared_ptr<Permissions> perms_arg)
 : state(NONE),
   data1(""),
   data2(""),
   prof{std::move(prof_arg)},
   proc{std::move(proc_arg)},
-  logs{std::move(logs_arg)}
+  logs{std::move(logs_arg)},
+  perms{std::move(perms_arg)}
 {
   auto function = sigc::mem_fun(*this, &DispatcherMiddleman::handle_signal);
   dispatch.connect(function);
@@ -45,6 +47,15 @@ void DispatcherMiddleman::update_prof_apply_text(const std::string& text){
   dispatch.emit();
 }
 
+void DispatcherMiddleman::update_permissions(const std::string& text){
+  std::lock_guard<std::mutex> lock(mtx);
+  state = PERMISSIONS;
+  data1 = text;
+  data2 = "";
+  printf("in update_permisssions() in dispatch middleman\n");
+  dispatch.emit();
+}
+
 // Receive method (called from main thread)
 void DispatcherMiddleman::handle_signal(){
   // Will need to use these later and we want them declared outside the following scope.
@@ -70,6 +81,9 @@ void DispatcherMiddleman::handle_signal(){
       break;
     case LOGS:
       logs->add_data_to_record(cached_data1);
+      break;
+    case PERMISSIONS:
+      perms->add_data_to_record(cached_data1);
       break;
     case PROFILES_TEXT:
       prof->set_apply_label_text(cached_data1);

@@ -4,6 +4,7 @@
 #include "../tabs/logs.h"
 #include "../tabs/processes.h"
 #include "../tabs/profiles.h"
+#include "../tabs/permissions.h"
 
 #include <glibmm/dispatcher.h>
 #include <mutex>
@@ -17,13 +18,14 @@ class DispatcherMiddleman
 {
   public:
     // Constructor
-    DispatcherMiddleman(std::shared_ptr<Profiles> prof, std::shared_ptr<Processes> proc, std::shared_ptr<Logs> logs);
+    DispatcherMiddleman(std::shared_ptr<Profiles> prof, std::shared_ptr<Processes> proc, std::shared_ptr<Logs> logs, std::shared_ptr<Permissions> perms);
 
     // Send methods (called from second thread)
     void update_profiles(const std::string& confined);
     void update_processes(const std::string& confined, const std::string& unconfined);
     void update_logs(const std::string& logs);
     void update_prof_apply_text(const std::string& text);
+    void update_permissions(const std::string& text);
 
   protected:
     enum CallState {
@@ -31,6 +33,7 @@ class DispatcherMiddleman
       PROFILE,
       PROCESS,
       LOGS,
+      PERMISSIONS,
       PROFILES_TEXT
     };
 
@@ -47,6 +50,7 @@ class DispatcherMiddleman
     std::shared_ptr<Profiles> prof;
     std::shared_ptr<Processes> proc;
     std::shared_ptr<Logs> logs;
+    std::shared_ptr<Permissions> perms;
 
     // Synchronization
     std::mutex mtx;

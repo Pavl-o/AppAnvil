@@ -1,4 +1,5 @@
 #include "command_caller.h"
+#include "../tabs/parser.h"
 
 #include <glibmm/spawn.h>
 #include <iostream>
@@ -53,6 +54,14 @@ std::string CommandCaller::get_logs_str(){
   }
 
   return child_output;
+}
+
+std::string CommandCaller::get_perms_str(){
+  // TODO: add functionality which pulls the currently-selected profile in the Profiles tab
+  // currently just a hardcoded filename for demonstration purposes
+  std::cerr << "AAAHHHHH" << std::endl;
+  return Parser::get_perms("usr.bin.firefox");
+  std::cerr << "OOOOHHHH" << std::endl;
 }
 
 // Code modified from Pavl-o's fork

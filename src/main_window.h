@@ -7,6 +7,7 @@
 #include "tabs/processes.h"
 #include "tabs/profiles.h"
 #include "tabs/status.h"
+#include "tabs/permissions.h"
 #include <gtkmm/applicationwindow.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/headerbar.h>
@@ -55,6 +56,7 @@ class MainWindow : public Gtk::ApplicationWindow
     std::shared_ptr<Profiles> prof;
     std::shared_ptr<Processes> proc;
     std::shared_ptr<Logs> logs;
+    std::shared_ptr<Permissions> perms;
 
     // Second thread for calling command line utilities
     std::shared_ptr<ConsoleThread> console;

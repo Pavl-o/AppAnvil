@@ -36,6 +36,16 @@ class CommandCaller{
     static std::string get_unconfined();
 
     /**
+     * @brief Return the output of Parser::get_perms()
+     * 
+     * @details
+     * Returns the output of the Parser's `get_perms` function to get a list of permissions for a profile. 
+     * 
+     * @returns std::string the raw output of `Parser::get_perms()`
+     */
+    static std::string get_perms_str();
+
+    /**
      * @brief Change the status of a profile
      * 
      * @details

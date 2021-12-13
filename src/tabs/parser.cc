@@ -34,11 +34,15 @@ std::string Parser::handle_path(std::istringstream *is) {
 }
 
 std::string Parser::get_perms(const std::string& filename) {
+	std::cerr << "trying to open the file\n";
+
 	std::ifstream fp(filename);
 	if (!fp) {
 		std::cerr << "cannot open profile for parsing\n";
 		return "ERROR";
   	}
+
+	std::cerr << "opened the file\n";
 
 	// keep track of how many of each resource we encounter in each of the 4 rule qualifier categories
 	int allow_len = 0;
@@ -61,19 +65,25 @@ std::string Parser::get_perms(const std::string& filename) {
 	// move file pointer to first '{' character
 	std::getline(fp, line, '{'); 
 
+	std::cerr << line;
+
 	// scan every line into `line` string and check if it's a path to a resource/program with 
 	// access mode flags and if it is then append it to the return string
 	while (std::getline(fp, line, '\n')) {
 		// remove leading whitespace such as indentation
 		line = Parser::ltrim(line);
 
-		if (line.empty() || line.at(0) == '#'){
+		if (line.empty() || line.at(0) == '#') {
 			// Do nothing
+			std::cerr << "in the empty if" << std::endl;
+			continue;
 		}
 		else if (line.at(0) == '}') {
+			std::cerr << "reached a closing bracket" << std::endl;
 			// we hit a closing brace, no paths can exist between these braces so skip to the next block
 			// WARNING: this assumes that every closing brace is on it's own new line (seems to be the case so far)
 			std::getline(fp, line, '{');
+			std::cerr << "found another opening bracket" << std::endl;
 		}
 		if (line.at(0) == '/') {
 			// we have our path to the resource/program with no qualifier (i.e. default 'allow')
@@ -113,7 +123,13 @@ std::string Parser::get_perms(const std::string& filename) {
 		}
 	}
 
-	// return one massive semicolon-seperated string where the first 4 tokens are the number of entries in each rule qualifier category
-	return "" + std::to_string(allow_len) + ';' + std::to_string(deny_len) + ';' + std::to_string(audit_len) + ';' + std::to_string(owner_len) + ';'
+	std::cerr << "concatenating the string..." << std::endl;
+
+	std::string ret = "" + std::to_string(allow_len) + ';' + std::to_string(deny_len) + ';' + std::to_string(audit_len) + ';' + std::to_string(owner_len) + ';'
 		+ allow_str + ';' + deny_str + ';' + audit_str + ';' + owner_str;
+
+	std::cerr << ret << std::endl;
+
+	// return one massive semicolon-seperated string where the first 4 tokens are the number of entries in each rule qualifier category
+	return ret;
 }

@@ -6,12 +6,14 @@ MainWindow::MainWindow()
 : prof{new Profiles()},
   proc{new Processes()},
   logs{new Logs()},
-  console{new ConsoleThread(prof, proc, logs)}
+  perms{new Permissions()},
+  console{new ConsoleThread(prof, proc, logs, perms)}
 {
   // Add tabs to the stack pane
   m_stack.add(*prof, "prof", "Profiles");
   m_stack.add(*proc, "proc", "Processes");
   m_stack.add(*logs, "logs", "Logs");
+  m_stack.add(*perms, "perms", "Permissions");
 
   // Attach the stack to the stack switcher
   m_switcher.set_stack(m_stack);
@@ -58,6 +60,8 @@ bool MainWindow::on_switch(GdkEvent* event){
     console->send_refresh_message(PROCESS);
   } else if(visible_child == "logs"){
     console->send_refresh_message(LOGS);
+  } else if(visible_child == "perms"){
+    console->send_refresh_message(PERMISSIONS);
   }
 
   return false;
